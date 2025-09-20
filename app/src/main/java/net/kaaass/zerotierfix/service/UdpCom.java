@@ -32,13 +32,13 @@ public class UdpCom implements PacketSender, Runnable {
     }
 
     @Override // com.zerotier.sdk.PacketSender
-    public int onSendPacketRequested(long j, InetSocketAddress inetSocketAddress, ByteBuffer bArr, int i) {
+    public int onSendPacketRequested(long j, InetSocketAddress inetSocketAddress, byte[] bArr, int i) {
         if (this.svrChannel == null) {
             Log.e(TAG, "Attempted to send packet on a null socket");
             return -1;
         }
         try {
-            DebugLog.d(TAG, "onSendPacketRequested: Sent " + bArr.remaining() + " bytes to " + inetSocketAddress.toString());
+            DebugLog.d(TAG, "onSendPacketRequested: Sent " + packet.length + " bytes to " + inetSocketAddress.toString());
             this.svrChannel.send(bArr, inetSocketAddress);
             return 0;
         } catch (Exception unused) {
@@ -58,7 +58,9 @@ public class UdpCom implements PacketSender, Runnable {
                     buf.flip();
                     if (buf.remaining() > 0) {
                         DebugLog.d(TAG, "Got " + buf.remaining() + " Bytes From: " + recvSockAddr);
-                        ResultCode processWirePacket = this.node.processWirePacket(System.currentTimeMillis(), -1, (InetSocketAddress) recvSockAddr, buf, jArr);
+                        byte[] data = new byte[buf.remaining()];
+                        buf.get(data);
+                        ResultCode processWirePacket = this.node.processWirePacket(System.currentTimeMillis(), -1, (InetSocketAddress) recvSockAddr, data, jArr);
                         if (processWirePacket != ResultCode.RESULT_OK) {
                             Log.e(TAG, "processWirePacket returned: " + processWirePacket.toString());
                             this.ztService.shutdown();

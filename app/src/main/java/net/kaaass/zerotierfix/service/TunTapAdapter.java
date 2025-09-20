@@ -224,7 +224,9 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             } else {
                 destMac = this.arpTable.getMacForAddress(destIP);
             }
-            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV4_PACKET, 0, byteBuffer, nextDeadline);
+            byte[] data = new byte[byteBuffer.remaining()];
+            byteBuffer.get(data);
+            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV4_PACKET, 0, data, nextDeadline);
             if (result != ResultCode.RESULT_OK) {
                 Log.e(TAG, "Error calling processVirtualNetworkFrame: " + result.toString());
                 return;
@@ -236,7 +238,9 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             Log.d(TAG, "Unknown dest MAC address.  Need to look it up. " + destIP);
             destMac = InetAddressUtils.BROADCAST_MAC_ADDRESS;
             ByteBuffer arpReqPacket = this.arpTable.getRequestPacket(localMac, localV4Address, destIP);
-            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, ARP_PACKET, 0, arpReqPacket, nextDeadline);
+            byte[] data = new byte[arpReqPacket.remaining()];
+            arpReqPacket.get(data);
+            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, ARP_PACKET, 0, data, nextDeadline);
             if (result != ResultCode.RESULT_OK) {
                 Log.e(TAG, "Error sending ARP packet: " + result.toString());
                 return;
@@ -330,7 +334,9 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
         }
         // 发送数据包
         if (destMac != 0L) {
-            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV6_PACKET, 0, byteBuffer, nextDeadline);
+            byte[] data = new byte[byteBuffer.remaining()];
+            byteBuffer.get(data);
+            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV6_PACKET, 0, data, nextDeadline);
             if (result != ResultCode.RESULT_OK) {
                 Log.e(TAG, "Error calling processVirtualNetworkFrame: " + result.toString());
             } else {
@@ -345,7 +351,9 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
             }
             Log.d(TAG, "Sending Neighbor Solicitation");
             ByteBuffer packetData = this.ndpTable.getNeighborSolicitationPacket(sourceIP, destIP, localMac);
-            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV6_PACKET, 0, packetData, nextDeadline);
+            byte[] data = new byte[packetData.remaining()];
+            packetData.get(data);
+            var result = this.node.processVirtualNetworkFrame(System.currentTimeMillis(), this.networkId, localMac, destMac, IPV6_PACKET, 0, data, nextDeadline);
             if (result != ResultCode.RESULT_OK) {
                 Log.e(TAG, "Error calling processVirtualNetworkFrame: " + result.toString());
             } else {
@@ -451,10 +459,12 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
                     var nextDeadline = new long[1];
                     ByteBuffer packetData = this.arpTable.getReplyPacket(networkConfig.getMac(),
                             localV4Address, arpReply.getDestMac(), arpReply.getDestAddress());
+                    byte[] data = new byte[packetData.remaining()];
+                    packetData.get(data);
                     var result = this.node
                             .processVirtualNetworkFrame(System.currentTimeMillis(), networkId,
                                     networkConfig.getMac(), srcMac, ARP_PACKET, 0,
-                                    packetData, nextDeadline);
+                                    data, nextDeadline);
                     if (result != ResultCode.RESULT_OK) {
                         Log.e(TAG, "Error sending ARP packet: " + result.toString());
                         return;
