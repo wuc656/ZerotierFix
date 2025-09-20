@@ -197,7 +197,7 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
         InetAddress localV4Address = null;
         int cidr = 0;
 
-        for (InetSocketAddress address : ztAddresses.toList()) {
+        for (InetSocketAddress address : ztAddresses) {
             if (address.getAddress() instanceof Inet4Address) {
                 localV4Address = address.getAddress();
                 cidr = address.getPort();
@@ -279,7 +279,7 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
         InetAddress localV4Address = null;
         int cidr = 0;
 
-        for (var address : ztAddresses.toList()) {
+        for (var address : ztAddresses) {
             if (address.getAddress() instanceof Inet6Address) {
                 localV4Address = address.getAddress();
                 cidr = address.getPort();
