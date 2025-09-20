@@ -429,7 +429,8 @@ public class TunTapAdapter implements VirtualNetworkFrameListener {
      */
     @Override
     public void onVirtualNetworkFrame(long networkId, long srcMac, long destMac, long etherType,
-                                      long vlanId, ByteBuffer frameData) {
+                                      long vlanId, ByteBuffer buffer) {
+        ByteBuffer frameData = ByteBuffer.wrap(buffer);
         DebugLog.d(TAG, "Got Virtual Network Frame. " +
                 " Network ID: " + StringUtils.networkIdToString(networkId) +
                 " Source MAC: " + StringUtils.macAddressToString(srcMac) +
