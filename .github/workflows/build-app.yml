@@ -31,7 +31,7 @@ jobs:
         with:
           cmdline-tools-version: 'latest'
           log-accepted-android-sdk-licenses: 'false'
-          packages: 'tools platform-tools cmake;3.31.5 platforms;android-35 ndk;28.0.13004108'
+          packages: 'tools platform-tools cmake;4.1.1 platforms;android-35 ndk;28.0.13004108'
 
       - name: Build APK
         run: ./gradlew :app:assembleRelease
