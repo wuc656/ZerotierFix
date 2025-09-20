@@ -39,7 +39,7 @@ public class UdpCom implements PacketSender, Runnable {
         }
         try {
             DebugLog.d(TAG, "onSendPacketRequested: Sent " + bArr.length + " bytes to " + inetSocketAddress.toString());
-            this.svrChannel.send(bArr, inetSocketAddress);
+            this.svrChannel.send(ByteBuffer.wrap(bArr), inetSocketAddress);
             return 0;
         } catch (Exception unused) {
             return -1;
